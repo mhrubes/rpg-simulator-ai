@@ -20,7 +20,7 @@ const ATK_LABEL: Record<AppLocale, string> = {
 
 /**
  * Odhad útoku zbraně: podle třídy postavy se počítá jen z primárního atributu
- * (rytíř → síla, lučostřelec → obratnost, kouzelník → inteligence).
+ * (rytíř → síla, lukostřelec → obratnost, kouzelník → inteligence).
  */
 export function estimatedWeaponPower(item: GameItem, playerClass: PlayerClass): number | null {
   if (item.kind !== "weapon") return null;

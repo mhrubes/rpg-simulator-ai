@@ -10,7 +10,7 @@ export const cs: Record<string, string> = {
   "auth.switchToRegister": "Nemáš účet? Registrace",
   "auth.switchToLogin": "Už máš účet? Přihlášení",
   "class.knight": "Rytíř",
-  "class.archer": "Lučostřelec",
+  "class.archer": "Lukostřelec",
   "class.mage": "Kouzelník",
   "class.pick": "Vyber třídu",
   "nav.tavern": "Taverna",
