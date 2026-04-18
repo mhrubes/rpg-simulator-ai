@@ -35,6 +35,11 @@ export const cs: Record<string, string> = {
   "settings.locale": "Jazyk",
   "settings.locale.cs": "Čeština",
   "settings.locale.en": "English",
+  "settings.itemCompare": "Porovnat s nasazenou výstrojí",
+  "settings.itemCompareHint":
+    "U kováře, kouzelníka i v inventáři u předmětů mimo sloty výstroje uvidíš +/− statů a útoku vůči aktuálně nasazenému kusu ve stejném slotu (u prstenů proti slabšímu z obou).",
+  "settings.itemCompareOn": "Zapnuto",
+  "settings.itemCompareOff": "Vypnuto",
   "player.title": "Hrdina",
   "player.xp": "Zkušenost",
   "player.stats": "Atributy",

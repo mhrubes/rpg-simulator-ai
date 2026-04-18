@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useI18n } from "@/providers/I18nProvider";
+import { useUiPrefs } from "@/providers/UiPrefsProvider";
 import { useGameStore } from "@/stores/gameStore";
 import type { EquipmentState, GameItem, PlayerClass } from "@/lib/game/types";
 import { totalStats } from "@/lib/game/stats";
@@ -9,6 +10,8 @@ import { xpToNextLevel, primaryStatForClass } from "@/lib/game/formulas";
 import { motion } from "framer-motion";
 import { itemFitsEquipmentSlot } from "@/lib/game/equipment";
 import { getItemDetailLines } from "@/lib/game/itemDisplay";
+import { comparisonEquipmentKey, isSameEquippedItem } from "@/lib/game/itemCompare";
+import { ItemStatCompare } from "@/components/items/ItemStatCompare";
 import type { AppLocale } from "@/i18n/messages";
 
 type SlotRef =
@@ -36,15 +39,26 @@ function ItemCell({
   sid,
   locale,
   playerClass,
+  equipment,
+  itemCompareEnabled,
   onDouble,
 }: {
   item: GameItem | null;
   sid: string;
   locale: AppLocale;
   playerClass: PlayerClass;
+  equipment: EquipmentState;
+  itemCompareEnabled: boolean;
   onDouble?: () => void;
 }) {
   const details = item ? getItemDetailLines(item, locale, playerClass) : null;
+  const isEquippedSlot = sid.startsWith("eq:");
+  const cmpKey =
+    item && itemCompareEnabled && !isEquippedSlot && item.kind !== "elixir"
+      ? comparisonEquipmentKey(item, equipment)
+      : null;
+  const equipped = cmpKey ? equipment[cmpKey] : null;
+  const showCompare = Boolean(item && equipped && !isSameEquippedItem(item, equipped));
 
   return (
     <div
@@ -75,6 +89,13 @@ function ItemCell({
           {details?.elixirHint && (
             <span className="text-sm text-sky-200/90">{details.elixirHint}</span>
           )}
+          <ItemStatCompare
+            enabled={showCompare}
+            candidate={item}
+            equipped={equipped}
+            locale={locale}
+            playerClass={playerClass}
+          />
           <span className="mt-auto truncate border-t border-white/5 pt-0.5 text-sm text-vb-muted">
             L{item.levelReq} · {item.priceGold}g
             {item.unique ? " · ★" : ""}
@@ -89,6 +110,7 @@ function ItemCell({
 
 export default function PlayerPage() {
   const { t, locale } = useI18n();
+  const { itemCompareEnabled } = useUiPrefs();
   const game = useGameStore((s) => s.game)!;
   const patch = useGameStore((s) => s.patch);
   const swapInventory = useGameStore((s) => s.swapInventory);
@@ -203,7 +225,14 @@ export default function PlayerPage() {
               }}
             >
               <div className="mb-1 text-sm uppercase text-vb-muted">{e}</div>
-              <ItemCell item={game.equipment[e]} sid={slotId({ k: "eq", e })} locale={locale} playerClass={game.playerClass} />
+              <ItemCell
+                item={game.equipment[e]}
+                sid={slotId({ k: "eq", e })}
+                locale={locale}
+                playerClass={game.playerClass}
+                equipment={game.equipment}
+                itemCompareEnabled={itemCompareEnabled}
+              />
             </div>
           ))}
         </div>
@@ -227,6 +256,8 @@ export default function PlayerPage() {
                 sid={slotId({ k: "inv", i })}
                 locale={locale}
                 playerClass={game.playerClass}
+                equipment={game.equipment}
+                itemCompareEnabled={itemCompareEnabled}
                 onDouble={() => {
                   if (it?.kind === "elixir") useElixir(i);
                 }}
@@ -252,7 +283,14 @@ export default function PlayerPage() {
             </p>
           )}
           <div className="mt-2">
-            <ItemCell item={game.overflow.item} sid="overflow" locale={locale} playerClass={game.playerClass} />
+            <ItemCell
+              item={game.overflow.item}
+              sid="overflow"
+              locale={locale}
+              playerClass={game.playerClass}
+              equipment={game.equipment}
+              itemCompareEnabled={itemCompareEnabled}
+            />
           </div>
         </div>
         <div

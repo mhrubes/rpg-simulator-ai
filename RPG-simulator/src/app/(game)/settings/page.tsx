@@ -1,10 +1,12 @@
 "use client";
 
 import { useI18n } from "@/providers/I18nProvider";
+import { useUiPrefs } from "@/providers/UiPrefsProvider";
 import type { AppLocale } from "@/i18n/messages";
 
 export default function SettingsPage() {
   const { t, locale, setLocale } = useI18n();
+  const { itemCompareEnabled, setItemCompareEnabled } = useUiPrefs();
 
   return (
     <div className="space-y-6">
@@ -24,6 +26,27 @@ export default function SettingsPage() {
               {l === "cs" ? t("settings.locale.cs") : t("settings.locale.en")}
             </button>
           ))}
+        </div>
+      </div>
+
+      <div className="vb-card max-w-lg space-y-3 p-5">
+        <p className="text-base font-medium text-white">{t("settings.itemCompare")}</p>
+        <p className="text-sm leading-relaxed text-vb-muted">{t("settings.itemCompareHint")}</p>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            className={`vb-btn flex-1 ${itemCompareEnabled ? "vb-btn-primary" : ""}`}
+            onClick={() => setItemCompareEnabled(true)}
+          >
+            {t("settings.itemCompareOn")}
+          </button>
+          <button
+            type="button"
+            className={`vb-btn flex-1 ${!itemCompareEnabled ? "vb-btn-primary" : ""}`}
+            onClick={() => setItemCompareEnabled(false)}
+          >
+            {t("settings.itemCompareOff")}
+          </button>
         </div>
       </div>
     </div>

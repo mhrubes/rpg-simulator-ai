@@ -35,6 +35,11 @@ export const en: Record<string, string> = {
   "settings.locale": "Language",
   "settings.locale.cs": "Czech",
   "settings.locale.en": "English",
+  "settings.itemCompare": "Compare to equipped gear",
+  "settings.itemCompareHint":
+    "At the blacksmith, mage vendor, and in inventory (except equipped slots), see +/- for stats and attack vs the item currently in the same slot (for rings, vs the weaker of your two rings).",
+  "settings.itemCompareOn": "On",
+  "settings.itemCompareOff": "Off",
   "player.title": "Hero",
   "player.xp": "Experience",
   "player.stats": "Attributes",

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { I18nProvider } from "./I18nProvider";
+import { UiPrefsProvider } from "./UiPrefsProvider";
 import { useGameStore } from "@/stores/gameStore";
 import { VaultborneToaster } from "@/components/ui/VaultborneToaster";
 
@@ -24,9 +25,11 @@ function GameBootstrap() {
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <I18nProvider>
-      <GameBootstrap />
-      <VaultborneToaster />
-      {children}
+      <UiPrefsProvider>
+        <GameBootstrap />
+        <VaultborneToaster />
+        {children}
+      </UiPrefsProvider>
     </I18nProvider>
   );
 }

@@ -4,10 +4,14 @@ import type { GameItem, PlayerClass, StatKey } from "./types";
 
 const STAT_ORDER: StatKey[] = ["str", "dex", "int", "vit"];
 
-const LABELS: Record<AppLocale, Record<StatKey, string>> = {
+export const STAT_SHORT_LABELS: Record<AppLocale, Record<StatKey, string>> = {
   cs: { str: "Síl", dex: "Obr", int: "Int", vit: "Živ" },
   en: { str: "Str", dex: "Dex", int: "Int", vit: "Vit" },
 };
+
+export function statShortLabel(locale: AppLocale, k: StatKey): string {
+  return STAT_SHORT_LABELS[locale][k];
+}
 
 const ATK_LABEL: Record<AppLocale, string> = {
   cs: "Útok",
@@ -26,7 +30,7 @@ export function estimatedWeaponPower(item: GameItem, playerClass: PlayerClass): 
 }
 
 export function itemStatBonusLines(item: GameItem, locale: AppLocale): string[] {
-  const lab = LABELS[locale];
+  const lab = STAT_SHORT_LABELS[locale];
   const out: string[] = [];
   for (const k of STAT_ORDER) {
     const v = item.stats[k];
@@ -51,7 +55,7 @@ export function getItemDetailLines(item: GameItem, locale: AppLocale, playerClas
 
   let elixirHint: string | null = null;
   if (item.kind === "elixir" && item.elixirStat) {
-    const L = LABELS[locale][item.elixirStat];
+    const L = STAT_SHORT_LABELS[locale][item.elixirStat];
     elixirHint = locale === "cs" ? `Elixír · ${L}` : `Elixir · ${L}`;
   }
 

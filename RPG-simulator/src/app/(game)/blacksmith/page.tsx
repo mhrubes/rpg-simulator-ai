@@ -2,10 +2,13 @@
 
 import { toast } from "sonner";
 import { useI18n } from "@/providers/I18nProvider";
+import { useUiPrefs } from "@/providers/UiPrefsProvider";
 import { useGameStore } from "@/stores/gameStore";
 import type { BlacksmithOfferSlot } from "@/lib/game/blacksmithShop";
 import { BLACKSMITH_REFRESH_DIAMOND_COST } from "@/lib/game/blacksmithShop";
 import { getItemDetailLines } from "@/lib/game/itemDisplay";
+import { isSameEquippedItem } from "@/lib/game/itemCompare";
+import { ItemStatCompare } from "@/components/items/ItemStatCompare";
 
 const SLOTS: BlacksmithOfferSlot[] = ["weapon", "helmet", "armor", "gloves", "boots"];
 
@@ -19,6 +22,7 @@ const SLOT_LABEL: Record<BlacksmithOfferSlot, string> = {
 
 export default function BlacksmithPage() {
   const { t, locale } = useI18n();
+  const { itemCompareEnabled } = useUiPrefs();
   const game = useGameStore((s) => s.game)!;
   const buyWeapon = useGameStore((s) => s.buyWeapon);
   const buyArmor = useGameStore((s) => s.buyArmor);
@@ -55,6 +59,9 @@ export default function BlacksmithPage() {
           const details = getItemDetailLines(item, locale, game.playerClass);
           const canBuy = game.gold >= item.priceGold;
           const invFull = game.inventory.every((x) => x !== null);
+          const equipped = game.equipment[slot];
+          const showCompare =
+            itemCompareEnabled && equipped != null && !isSameEquippedItem(item, equipped);
 
           return (
             <div
@@ -71,13 +78,20 @@ export default function BlacksmithPage() {
                   {line}
                 </span>
               ))}
-              <div className="mt-1 text-base text-amber-200">
+              <ItemStatCompare
+                enabled={showCompare}
+                candidate={item}
+                equipped={equipped}
+                locale={locale}
+                playerClass={game.playerClass}
+              />
+              <div className="mt-auto text-base text-amber-200">
                 {item.priceGold} {t("common.gold").toLowerCase()}
                 <span className="text-vb-muted"> · L{item.levelReq}</span>
               </div>
               <button
                 type="button"
-                className="vb-btn vb-btn-primary mt-auto"
+                className="vb-btn vb-btn-primary"
                 disabled={!canBuy || invFull}
                 onClick={() => {
                   const r = slot === "weapon" ? buyWeapon() : buyArmor(slot);
