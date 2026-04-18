@@ -1,9 +1,11 @@
 import type { PlayerClass } from "@/lib/game/types";
+import { hashPassword, isBcryptHash, verifyPassword } from "./passwordHash";
 import { STORAGE_SESSION, STORAGE_USERS } from "./keys";
 
 export type RegistryUser = {
   id: string;
   nickname: string;
+  /** bcrypt hash (`$2a$…`); starší účty mohly mít plain text — při přihlášení se přepíše na hash */
   password: string;
   playerClass: PlayerClass;
   createdAt: number;
@@ -27,6 +29,14 @@ function writeUsers(users: RegistryUser[]) {
   window.localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
 }
 
+function persistUserPasswordHash(userId: string, passwordHashValue: string) {
+  const users = readUsers();
+  const idx = users.findIndex((u) => u.id === userId);
+  if (idx === -1) return;
+  users[idx] = { ...users[idx]!, password: passwordHashValue };
+  writeUsers(users);
+}
+
 export function listRegisteredUsers(): RegistryUser[] {
   return readUsers();
 }
@@ -42,6 +52,7 @@ export function registerUser(entry: Omit<RegistryUser, "id" | "createdAt" | "und
   }
   const user: RegistryUser = {
     ...entry,
+    password: hashPassword(entry.password),
     id: crypto.randomUUID(),
     createdAt: Date.now(),
     underworldFloorsCleared: 0,
@@ -53,7 +64,12 @@ export function registerUser(entry: Omit<RegistryUser, "id" | "createdAt" | "und
 
 export function verifyLogin(nickname: string, password: string): RegistryUser | null {
   const u = findUserByNickname(nickname);
-  if (!u || u.password !== password) return null;
+  if (!u) return null;
+  if (!verifyPassword(password, u.password)) return null;
+  if (!isBcryptHash(u.password)) {
+    persistUserPasswordHash(u.id, hashPassword(password));
+    return findUserByNickname(nickname) ?? null;
+  }
   return u;
 }
 
