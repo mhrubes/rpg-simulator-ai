@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+:root {
+  --vb-bg: #0b0d12;
+  --vb-panel: #121722;
+  --vb-panel2: #1a2030;
+  --vb-border: #2a3348;
+  --vb-amber: #f4b942;
+  --vb-amber-dim: #c8942a;
+  --vb-text: #e8ecf5;
+  --vb-muted: #8b95ad;
+  --vb-danger: #e24d4d;
+  --vb-ok: #4ade80;
+}
+
+@theme inline {
+  --color-vb-bg: var(--vb-bg);
+  --color-vb-panel: var(--vb-panel);
+  --color-vb-panel2: var(--vb-panel2);
+  --color-vb-border: var(--vb-border);
+  --color-vb-amber: var(--vb-amber);
+  --color-vb-text: var(--vb-text);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+/* Lehce větší základní škála (~17px) — Tailwind rem utility i .vb-btn rostou konzistentně. */
+html {
+  font-size: 106.25%;
+}
+
+body {
+  background: radial-gradient(1200px 600px at 20% -10%, #1a2235 0%, var(--vb-bg) 55%);
+  color: var(--vb-text);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+.vb-card {
+  background: linear-gradient(180deg, var(--vb-panel2), var(--vb-panel));
+  border: 1px solid var(--vb-border);
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+.vb-glow {
+  box-shadow: 0 0 0 1px rgba(244, 185, 66, 0.15), 0 0 40px rgba(244, 185, 66, 0.08);
+}
+
+.vb-btn {
+  border-radius: 10px;
+  border: 1px solid var(--vb-border);
+  background: linear-gradient(180deg, #2a3144, #1e2433);
+  color: var(--vb-text);
+  padding: 0.6rem 1rem;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  transition: border-color 0.15s, transform 0.12s;
+}
+.vb-btn:hover {
+  border-color: rgba(244, 185, 66, 0.45);
+}
+.vb-btn:active {
+  transform: translateY(1px);
+}
+.vb-btn-primary {
+  border-color: rgba(244, 185, 66, 0.55);
+  background: linear-gradient(180deg, #4a3b1a, #2d2410);
+  color: #ffecc8;
+}
+
+.vb-input {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--vb-border);
+  background: #0f121a;
+  color: var(--vb-text);
+  padding: 0.6rem 0.8rem;
+  font-size: 0.9375rem;
+}
+.vb-input:focus {
+  outline: none;
+  border-color: rgba(244, 185, 66, 0.55);
+}
